@@ -125,9 +125,9 @@ public class BossController : MonoBehaviour
             currentHead.Rotate(target*4);
             yield return new WaitForSeconds(turningHeadSpeed);
         }
-        isStaring = false;
         hasLooked = true;
         yield return new WaitForSeconds(stareDurration);
+        isStaring = false;
         currentHead.localRotation = originalPosition;
         StartCoroutine(CompleteJourney());
     }
