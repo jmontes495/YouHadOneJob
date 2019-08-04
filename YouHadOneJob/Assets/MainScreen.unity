@@ -332,7 +332,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 35.1
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1273,7 +1273,7 @@ PrefabInstance:
     - target: {fileID: 2926647236094142700, guid: 2f0f1a7bc004d554593c0d52df447aea,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.98
+      value: 1.01
       objectReference: {fileID: 0}
     - target: {fileID: 2926647236094142700, guid: 2f0f1a7bc004d554593c0d52df447aea,
         type: 3}
@@ -1339,6 +1339,51 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 15.999552
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893485573550714085, guid: 2f0f1a7bc004d554593c0d52df447aea,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.62109023
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893485573550714085, guid: 2f0f1a7bc004d554593c0d52df447aea,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.38644072
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893485573550714085, guid: 2f0f1a7bc004d554593c0d52df447aea,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.28180903
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893485573550714085, guid: 2f0f1a7bc004d554593c0d52df447aea,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.62088186
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893485573550714085, guid: 2f0f1a7bc004d554593c0d52df447aea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -98.48599
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893485573550714085, guid: 2f0f1a7bc004d554593c0d52df447aea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -61.602997
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893485573550714085, guid: 2f0f1a7bc004d554593c0d52df447aea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 118.169
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893485573550714085, guid: 2f0f1a7bc004d554593c0d52df447aea,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.32742876
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893485573550714085, guid: 2f0f1a7bc004d554593c0d52df447aea,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.37465954
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f0f1a7bc004d554593c0d52df447aea, type: 3}
