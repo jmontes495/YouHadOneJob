@@ -4,15 +4,7 @@ using UnityEngine.UI;
 
 namespace YouHadOneJob
 {
-    public enum MailingState
-    {
-        Writting = 0,
-        Sending = 1,
-        Cancelling = 2,
-        Completed = 3,
-    }
-
-    public class Mail : TabContent
+    public class Mailing : TabContent
     {
         [SerializeField]
         private Text mailLabel;
@@ -209,4 +201,5 @@ namespace YouHadOneJob
             throw new UnityException ();
         }
     }
+
 }

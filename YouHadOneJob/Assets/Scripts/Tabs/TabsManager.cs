@@ -18,7 +18,7 @@ namespace YouHadOneJob
             foreach (TabContent tabContent in tabsContentArray)
                 tabsContent.Add (tabContent.TabType, tabContent);
 
-            FocusTab (TabType.Mail);
+            FocusTab (TabType.Mailing);
         }
 
         public void FocusTab (TabType tabType)

@@ -3,9 +3,9 @@
     public enum TabType
     {
         None = 0,
-        Mail = 1,
-        Code = 2,
-        Art = 3,
-        Game = 4,
+        Mailing = 1,
+        Coding = 2,
+        Arting = 3,
+        Sneaking = 4,
     }
 }
