@@ -1,109 +1,212 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace YouHadOneJob
 {
-    public class Mail : MonoBehaviour
+    public enum MailingState
+    {
+        Writting = 0,
+        Sending = 1,
+        Cancelling = 2,
+        Completed = 3,
+    }
+
+    public class Mail : TabContent
     {
         [SerializeField]
         private Text mailLabel;
         [SerializeField]
-        private Text mailWordsLabel;
+        private GameObject possibleWordsContainer;
         [SerializeField]
-        private Text[] wordsLabels;
+        private Text[] possibleWordsLabels;
         [SerializeField]
-        private Image currentWordHighlight;
+        private GameObject wrongWordAlert;
 
-        private const float wordChangeTime = 0.7f;
-        private const int completedMailWordsCount = 50;
-        private readonly string mailWordsLabelFormat = "Words : {0}/" + completedMailWordsCount;
+        private const int mailsToWrite = 5;
+        private const int wordsCountPerMail = 20;
+        private const float possibleWordChangeTime = 0.7f;
+        private const float sendDuration = 15f;
 
+        private MailingState state;
+        private int possibleWordsCount;
+        private string[] possibleWords;
+        private float possibleWordElapsedTime;
         private int wordsCount;
-        private int indexForCurrent;
-        private string[] words;
-        private float wordElapsedTime;
-        private int mailWordsCount;
-        private bool isCompleted;
+        private float sendStartTime;
+        private int writtenMails;
 
-        private void Start ()
+        private void Awake ()
         {
+            HideWordAlert ();
             mailLabel.text = string.Empty;
-            mailWordsCount = 0;
-            mailWordsLabel.text = string.Format (mailWordsLabelFormat, mailWordsCount);
+            wordsCount = 0;
+            writtenMails = 0;
             GenerateWords ();
         }
 
         private void GenerateWords ()
         {
-            wordsCount = wordsLabels.Length;
-            indexForCurrent = Mathf.FloorToInt (wordsCount / 2f);
-            words = new string[wordsCount];
-            for (int i = 0; i < indexForCurrent; i++)
+            possibleWordsCount = possibleWordsLabels.Length;
+            possibleWords = new string[possibleWordsCount];
+            for (int i = 0; i < possibleWordsCount; i++)
             {
-                string word = string.Empty;
-                words[i] = word;
-                wordsLabels[i].text = word;
-            }
-            for (int i = indexForCurrent; i < wordsCount; i++)
-            {
-                string word = GetRandomWord ();
-                words[i] = word;
-                wordsLabels[i].text = word;
+                string possibleWord = GetRandomWord ();
+                possibleWords[i] = possibleWord;
+                possibleWordsLabels[i].text = possibleWord;
             }
         }
 
-        private void Update ()
+        protected override void Tick (bool isFocused)
         {
-            if (isCompleted)
-                return;
+            switch (state)
+            {
+                case MailingState.Completed:
+                    break;
+                case MailingState.Sending:
+                case MailingState.Cancelling:
+                    if (Time.time - sendStartTime > sendDuration)
+                    {
+                        state = MailingState.Writting;
+                        mailLabel.text = string.Empty;
+                        wordsCount = 0;
+                        possibleWordsContainer.SetActive (true);
+                    }
+                    break;
+                case MailingState.Writting:
+                    possibleWordElapsedTime += Time.deltaTime;
+                    if (possibleWordElapsedTime > possibleWordChangeTime)
+                        ChangePossibleWord ();
 
-            wordElapsedTime += Time.deltaTime;
-            if (wordElapsedTime > wordChangeTime)
-                ChangeWord ();
-            if (Input.GetKeyDown (KeyCode.Space))
-                ChooseWord ();
+                    if (isFocused && Input.GetKeyDown (KeyCode.Space))
+                    {
+                        ChooseWord ();
+
+                        if (wordsCount == wordsCountPerMail)
+                        {
+                            writtenMails++;
+                            if (writtenMails == mailsToWrite)
+                            {
+                                state = MailingState.Completed;
+                                possibleWordsContainer.SetActive (false);
+                            }
+                            else
+                            {
+                                state = MailingState.Sending;
+                                sendStartTime = Time.time;
+                                possibleWordsContainer.SetActive (false);
+                                wordsCount = 0;
+                            }
+                        }
+                        else if (wordsCount == 0)
+                        {
+                            state = MailingState.Cancelling;
+                            sendStartTime = Time.time;
+                            possibleWordsContainer.SetActive (false);
+                        }
+                    }
+                    break;
+            }
         }
 
-        private void ChangeWord ()
+        private void ChangePossibleWord ()
         {
-            wordElapsedTime = 0;
-            for (int i = 0; i < wordsCount - 1; i++)
+            possibleWordElapsedTime = 0;
+            for (int i = 0; i < possibleWordsCount - 1; i++)
             {
-                string word = words[i + 1];
-                words[i] = word;
-                wordsLabels[i].text = word;
+                string word = possibleWords[i + 1];
+                possibleWords[i] = word;
+                possibleWordsLabels[i].text = word;
             }
             string newWord = GetRandomWord ();
-            words[wordsCount - 1] = newWord;
-            wordsLabels[wordsCount - 1].text = newWord;
+            possibleWords[possibleWordsCount - 1] = newWord;
+            possibleWordsLabels[possibleWordsCount - 1].text = newWord;
         }
 
         private void ChooseWord ()
         {
-            string currentWord = words[indexForCurrent];
-            if (currentWord == "meow")
+            string currentWord = possibleWords[0];
+            if (currentWord.IndexOf ("meow", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                mailLabel.text = string.Empty;
-                mailWordsCount = 0;
-                mailWordsLabel.text = string.Format (mailWordsLabelFormat, mailWordsCount);
+                ShowWrongWordAlert ();
+                wordsCount = 0;
+                mailLabel.text += currentWord;
                 return;
             }
-            mailWordsCount++;
-            mailWordsLabel.text = string.Format (mailWordsLabelFormat, mailWordsCount);
-            if (mailWordsCount == completedMailWordsCount)
-            {
-                isCompleted = true;
-                return;
-            }
-            ChangeWord ();
-            mailLabel.text += " " + currentWord;
+            wordsCount++;
+            string connector = UnityEngine.Random.Range (0f, 1f) > 0.2f ? " " : "\n";
+            mailLabel.text += currentWord + connector;
+            ChangePossibleWord ();
+        }
+
+        private void ShowWrongWordAlert ()
+        {
+            wrongWordAlert.SetActive (true);
+            if (IsInvoking ("HideWordAlert"))
+                CancelInvoke ("HideWordAlert");
+            Invoke ("HideWordAlert", sendDuration);
+        }
+
+        private void HideWordAlert ()
+        {
+            wrongWordAlert.SetActive (false);
         }
 
         private string GetRandomWord ()
         {
-            if (Random.Range (0f, 1f) > 0.5f)
-                return "woof";
-            return "meow";
+            float random = UnityEngine.Random.Range (0f, 1f);
+            if (random > 0.3f)
+            {
+                float woofRandom = UnityEngine.Random.Range (0f, 1f);
+                if (woofRandom > 0.4f)
+                    return "woof";
+                if (woofRandom > 0.2f)
+                    return "woof,";
+                if (woofRandom > 0.15f)
+                    return "woof.";
+                return "Woof";
+            }
+            float meowRandom = UnityEngine.Random.Range (0f, 1f);
+            if (meowRandom > 0.5f)
+                return "meow";
+            if (meowRandom > 0.4f)
+                return "MEOW!";
+            if (meowRandom > 0.3f)
+                return "meow,";
+            if (meowRandom > 0.2f)
+                return "meow?";
+            return "Meow";
+        }
+
+        protected override string GetTabText ()
+        {
+            switch (state)
+            {
+                case MailingState.Completed:
+                    return "Done";
+                case MailingState.Writting:
+                    return wordsCount + "/" + wordsCountPerMail;
+                case MailingState.Sending:
+                    return "Sending...";
+                case MailingState.Cancelling:
+                    return "Cancelling...";
+            }
+            throw new UnityException ();
+        }
+
+        protected override string GetInstructionsText ()
+        {
+            switch (state)
+            {
+                case MailingState.Completed:
+                    return "Done, switch to another tab";
+                case MailingState.Writting:
+                    return "Press SPACE to write the selected word";
+                case MailingState.Sending:
+                case MailingState.Cancelling:
+                    return "WAIT " + Mathf.CeilToInt (sendDuration - Time.time + sendStartTime) + "s";
+            }
+            throw new UnityException ();
         }
     }
 }

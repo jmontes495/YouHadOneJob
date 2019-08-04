@@ -1,11 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace YouHadOneJob
 {
-    public class TabContent : MonoBehaviour
+    public abstract class TabContent : MonoBehaviour
     {
         [SerializeField]
         private TabType tabType;
+        [SerializeField]
+        private Text instructionsLabel;
 
         public TabType TabType
         {
@@ -21,5 +24,22 @@ namespace YouHadOneJob
         {
             gameObject.SetActive (false);
         }
+
+        public void PublicTick (bool isFocused)
+        {
+            Tick (isFocused);
+            instructionsLabel.text = GetInstructionsText ();
+        }
+
+        public string PublicGetTabText ()
+        {
+            return GetTabText ();
+        }
+
+        protected abstract void Tick (bool isFocused);
+
+        protected abstract string GetTabText ();
+
+        protected abstract string GetInstructionsText ();
     }
 }

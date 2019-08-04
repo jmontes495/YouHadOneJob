@@ -31,7 +31,16 @@ namespace YouHadOneJob
             openTabType = tabType;
             openTabContent = tabsContent[tabType];
             openTabContent.Show ();
+        }
 
+        public void Tick (TabType tabType)
+        {
+            tabsContent[tabType].PublicTick (tabType == openTabType);
+        }
+
+        public string GetTabText (TabType tabType)
+        {
+            return tabsContent[tabType].PublicGetTabText ();
         }
     }
 }

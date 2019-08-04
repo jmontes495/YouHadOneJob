@@ -15,6 +15,11 @@ namespace YouHadOneJob
         }
 
         protected abstract void HandleClick ();
+
+        protected virtual void SetInteractable (bool interactable)
+        {
+            button.interactable = interactable;
+        }
     }
 
 }
