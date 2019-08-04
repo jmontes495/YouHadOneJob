@@ -17,6 +17,8 @@ namespace YouHadOneJob
             TabContent[] tabsContentArray = GetComponentsInChildren<TabContent> (true);
             foreach (TabContent tabContent in tabsContentArray)
                 tabsContent.Add (tabContent.TabType, tabContent);
+
+            FocusTab (TabType.Mail);
         }
 
         public void FocusTab (TabType tabType)
