@@ -53,6 +53,8 @@ public class BossController : MonoBehaviour
 
     private Transform currentHead;
 
+    private bool isStaring;
+
     private void Start()
     {
         originalLeftPosition = leftBoss.position;
@@ -75,6 +77,11 @@ public class BossController : MonoBehaviour
     public CurrentDirection GetCurrentDirection()
     {
         return currentDirection;
+    }
+
+    public bool IsStaring()
+    {
+        return isStaring;
     }
 
     public bool HasLookedOnHisWay()
@@ -114,9 +121,11 @@ public class BossController : MonoBehaviour
         //currentHead.Rotate(target);
         for (int i = 0; i < 18; i++)
         {
+            isStaring = true;
             currentHead.Rotate(target*4);
             yield return new WaitForSeconds(turningHeadSpeed);
         }
+        isStaring = false;
         hasLooked = true;
         yield return new WaitForSeconds(stareDurration);
         currentHead.localRotation = originalPosition;

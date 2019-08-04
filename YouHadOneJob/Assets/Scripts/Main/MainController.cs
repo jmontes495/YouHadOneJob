@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace YouHadOneJob
 {
@@ -22,30 +23,34 @@ namespace YouHadOneJob
         private float sanityLoss = 5f;
 
         private float currentStamina;
+        private bool lost;
 
         // Start is called before the first frame update
         void Start()
         {
             currentStamina = 100f;
-            panchito.ComeFromDirection(BossController.CurrentDirection.Left);
+            lost = false;
         }
 
         // Update is called once per frame
         void Update()
         {
-            switch(tabManager.GetCurrentTab())
+            if (lost)
+                return;
+
+            switch (tabManager.GetCurrentTab())
             {
                 case TabType.Snakeing:
                     if(currentStamina <= 100f)
                         currentStamina += Time.deltaTime * sanityGain;
 
-                    if (panchito.HasLookedOnHisWay())
+                    if (panchito.IsStaring())
                         Lost();
 
                     break;
 
                 case TabType.Arting:
-                    if (panchito.HasLookedOnHisWay() && art.GetState() == PaintingState.Cancelling)
+                    if (panchito.IsStaring() && art.GetState() == PaintingState.Cancelling)
                         Lost();
 
                     if (currentStamina >= 0f)
@@ -54,7 +59,7 @@ namespace YouHadOneJob
                     break;
 
                 case TabType.Mailing:
-                    if (panchito.HasLookedOnHisWay() && mail.GetState() == MailingState.Cancelling)
+                    if (panchito.IsStaring() && mail.GetState() == MailingState.Cancelling)
                         Lost();
 
                     if (currentStamina >= 0f)
@@ -63,7 +68,7 @@ namespace YouHadOneJob
                     break;
 
                 case TabType.Coding:
-                    if (panchito.HasLookedOnHisWay() && code.GetState() == CodingState.ReRunning)
+                    if (panchito.IsStaring() && code.GetState() == CodingState.Fixing)
                         Lost();
 
                     if (currentStamina >= 0f)
@@ -86,6 +91,13 @@ namespace YouHadOneJob
         private void Lost()
         {
             Debug.LogError("Lost");
+            lost = true;
+            Invoke("GoToGameOver", 2f);
+        }
+
+        private void GoToGameOver()
+        {
+            SceneManager.LoadScene("GameOver");
         }
     }
 }
