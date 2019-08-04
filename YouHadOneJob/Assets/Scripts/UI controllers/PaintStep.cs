@@ -34,5 +34,10 @@ namespace YouHadOneJob
         {
             step = stp;
         }
+
+        public int GetStep()
+        {
+            return currentStep;
+        }
     }
 }
