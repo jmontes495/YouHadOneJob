@@ -38,6 +38,9 @@ public class BossController : MonoBehaviour
     [SerializeField]
     private float stareDurration;
 
+    [SerializeField]
+    private float delayBetweenDoggos;
+
     private bool hasLooked = false;
 
     private CurrentDirection currentDirection;
@@ -53,8 +56,15 @@ public class BossController : MonoBehaviour
     private void Start()
     {
         originalLeftPosition = leftBoss.position;
-        originalRightPosition = leftBoss.position;
+        originalRightPosition = rightBoss.position;
         currentDirection = CurrentDirection.None;
+        StartCoroutine(StartDoggos());
+    }
+
+    private IEnumerator StartDoggos()
+    {
+        yield return new WaitForSeconds(delayBetweenDoggos);
+        ComeFromDirection(CurrentDirection.Right);
     }
 
     public bool IsWalking()
@@ -74,9 +84,6 @@ public class BossController : MonoBehaviour
 
     public void ComeFromDirection(CurrentDirection direction)
     {
-        if (currentDirection != CurrentDirection.None)
-            return;
-
         hasLooked = false;
         currentDirection = direction;
         currentBoss = currentDirection == CurrentDirection.Left ? leftBoss : rightBoss;
@@ -126,8 +133,7 @@ public class BossController : MonoBehaviour
         }
 
         currentBoss.position = currentDirection == CurrentDirection.Left ? originalLeftPosition : originalRightPosition;
-        currentDirection = CurrentDirection.None;
-        hasLooked = false;
+        ComeFromDirection(currentDirection == CurrentDirection.Left ? CurrentDirection.Right : CurrentDirection.Left);
     }
 
 
