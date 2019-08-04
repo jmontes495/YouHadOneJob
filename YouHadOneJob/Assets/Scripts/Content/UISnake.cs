@@ -23,6 +23,7 @@ namespace YouHadOneJob
         private GameObject gridLayout;
 
         private Image[] gridImages;
+        private int xSize;
 
         private void Awake ()
         {
@@ -31,11 +32,13 @@ namespace YouHadOneJob
 
         public void Setup (Snake snake)
         {
+            xSize = snake.XSize;
             snake.OnCreateFood += OnCreateFood;
             snake.OnCreateSnake += OnCreateSnake;
             snake.OnMoveHead += OnMoveHead;
             snake.OnMoveTail += OnMoveTail;
             snake.OnLose += OnLose;
+            snake.OnRestart += OnRestart;
         }
 
         private void OnCreateFood (Tile food)
@@ -66,9 +69,19 @@ namespace YouHadOneJob
             SetImage (head, explosionSprite, SnakeDirection.Up);
         }
 
+        private void OnRestart ()
+        {
+            foreach (Image image in gridImages)
+            {
+                image.sprite = null;
+                image.color = Color.clear;
+                image.rectTransform.localRotation = Quaternion.Euler (GetEulerRotation (SnakeDirection.Up));
+            }
+        }
+
         private void SetImage (Tile tile, Sprite sprite, SnakeDirection rotation)
         {
-            int index = tile.x + (tile.y * tile.x);
+            int index = tile.x + (tile.y * xSize);
             Image image = gridImages[index];
             image.sprite = sprite;
             image.color = sprite ? Color.white : Color.clear;

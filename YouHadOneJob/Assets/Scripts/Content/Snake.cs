@@ -11,10 +11,12 @@ namespace YouHadOneJob
         public event Action<Tile, Tile, SnakeDirection> OnMoveHead;
         public event Action<Tile, Tile, Tile> OnMoveTail;
         public event Action<Tile> OnLose;
+        public event Action OnRestart;
 
         private int xSize;
         private int ySize;
         private SnakeDirection direction;
+        private SnakeDirection nextDirection;
         private Dictionary<Tile, TileState> tiles;
         private LinkedList<Tile> snake;
         private SnakeState state;
@@ -24,12 +26,23 @@ namespace YouHadOneJob
             get { return state; }
         }
 
+        public int XSize
+        {
+            get { return xSize; }
+        }
+
         public Snake (int xSize, int ySize, int obstaclesCount)
         {
             this.xSize = xSize;
             this.ySize = ySize;
             direction = SnakeDirection.Right;
+            nextDirection = direction;
             CreateTiles (xSize, ySize);
+            state = SnakeState.Lost;
+        }
+
+        public void Initialize ()
+        {
             CreateSnake (headX: xSize / 2, headY: ySize / 2);
             CreateFood ();
             state = SnakeState.Playing;
@@ -51,6 +64,11 @@ namespace YouHadOneJob
         private void CreateSnake (int headX, int headY)
         {
             snake = new LinkedList<Tile> ();
+            InitSnake (headX, headY);
+        }
+
+        private void InitSnake (int headX, int headY)
+        {
             Tile head = new Tile (headX, headY);
             Tile tail = GetNextTile (head, direction.GetOpposite ()).Value;
             snake.AddFirst (head);
@@ -119,7 +137,7 @@ namespace YouHadOneJob
         {
             if (direction == this.direction.GetOpposite ())
                 return;
-            this.direction = direction;
+            nextDirection = direction;
         }
 
         public void Tick ()
@@ -127,6 +145,7 @@ namespace YouHadOneJob
             if (state == SnakeState.Lost)
                 return;
 
+            direction = nextDirection;
             Tile? newHead = GetNextTile (snake.First.Value, direction);
             TileState tileState = GetTileState (newHead);
             switch (tileState)
@@ -156,7 +175,34 @@ namespace YouHadOneJob
                 case TileState.Obstacle:
                 case TileState.OutOfGrid:
                     state = SnakeState.Lost;
+                    if (OnLose != null)
+                        OnLose (snake.First.Value);
                     break;
+            }
+        }
+
+        public void Restart ()
+        {
+            direction = SnakeDirection.Right;
+            nextDirection = direction;
+            ResetTiles ();
+            snake.Clear ();
+            if (OnRestart != null)
+                OnRestart ();
+            InitSnake (headX: xSize / 2, headY: ySize / 2);
+            CreateFood ();
+            state = SnakeState.Playing;
+        }
+
+        private void ResetTiles ()
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                for (int y = 0; y < ySize; y++)
+                {
+                    Tile tile = new Tile (x, y);
+                    tiles[tile] = TileState.Empty;
+                }
             }
         }
     }

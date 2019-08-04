@@ -12,14 +12,17 @@ namespace YouHadOneJob
         private Snake snake;
         private float elapsedTickTime;
 
-        private void Awake ()
+        private void Start ()
         {
             snake = new Snake (xSize: 18, ySize: 10, obstaclesCount: 8);
             uiSnake.Setup (snake);
+            snake.Initialize ();
         }
 
         protected override string GetInstructionsText ()
         {
+            if (snake != null && snake.State == SnakeState.Lost)
+                return "Press SPACE to restart";
             return "";
         }
 
@@ -30,22 +33,30 @@ namespace YouHadOneJob
 
         protected override void Tick (bool isFocused)
         {
-            if (isFocused && snake.State == SnakeState.Playing)
+            if (isFocused)
             {
-                if (Input.GetKeyDown (KeyCode.A))
-                    snake.ChangeDirection (SnakeDirection.Left);
-                if (Input.GetKeyDown (KeyCode.S))
-                    snake.ChangeDirection (SnakeDirection.Down);
-                if (Input.GetKeyDown (KeyCode.D))
-                    snake.ChangeDirection (SnakeDirection.Right);
-                if (Input.GetKeyDown (KeyCode.W))
-                    snake.ChangeDirection (SnakeDirection.Up);
-
-                elapsedTickTime += Time.deltaTime;
-                if (elapsedTickTime >= tickTime)
+                if (snake.State == SnakeState.Playing)
                 {
-                    elapsedTickTime = 0;
-                    snake.Tick ();
+                    if (Input.GetKeyDown (KeyCode.A))
+                        snake.ChangeDirection (SnakeDirection.Left);
+                    if (Input.GetKeyDown (KeyCode.S))
+                        snake.ChangeDirection (SnakeDirection.Down);
+                    if (Input.GetKeyDown (KeyCode.D))
+                        snake.ChangeDirection (SnakeDirection.Right);
+                    if (Input.GetKeyDown (KeyCode.W))
+                        snake.ChangeDirection (SnakeDirection.Up);
+
+                    elapsedTickTime += Time.deltaTime;
+                    if (elapsedTickTime >= tickTime)
+                    {
+                        elapsedTickTime = 0;
+                        snake.Tick ();
+                    }
+                }
+                else
+                {
+                    if (Input.GetKeyDown (KeyCode.Space))
+                        snake.Restart ();
                 }
             }
         }
