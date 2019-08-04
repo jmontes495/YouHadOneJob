@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace YouHadOneJob
 {
@@ -7,7 +8,7 @@ namespace YouHadOneJob
         [SerializeField, Range(0, 13)]
         private int step;
         [SerializeField]
-        private SpriteRenderer painter;
+        private Image painter;
         [SerializeField]
         private Sprite[] spriteCollection;
 
