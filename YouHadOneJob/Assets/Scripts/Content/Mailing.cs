@@ -200,6 +200,11 @@ namespace YouHadOneJob
             }
             throw new UnityException ();
         }
+
+        public MailingState GetState()
+        {
+            return state;
+        }
     }
 
 }

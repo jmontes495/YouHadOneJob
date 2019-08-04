@@ -42,5 +42,10 @@ namespace YouHadOneJob
         {
             return tabsContent[tabType].PublicGetTabText ();
         }
+
+        public TabType GetCurrentTab()
+        {
+            return openTabType;
+        }
     }
 }

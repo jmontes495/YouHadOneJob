@@ -148,5 +148,10 @@ namespace YouHadOneJob
             }
             throw new UnityException ();
         }
+
+        public CodingState GetState()
+        {
+            return state;
+        }
     }
 }

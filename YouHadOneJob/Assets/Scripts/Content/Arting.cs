@@ -119,5 +119,10 @@ namespace YouHadOneJob
                 
             }
         }
+
+        public PaintingState GetState()
+        {
+            return state;
+        }
     }
 }
