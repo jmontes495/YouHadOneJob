@@ -145,6 +145,7 @@ namespace YouHadOneJob
             if (state == SnakeState.Lost)
                 return;
 
+            SnakeDirection lastDirection = direction;
             direction = nextDirection;
             Tile? newHead = GetNextTile (snake.First.Value, direction);
             TileState tileState = GetTileState (newHead);
@@ -152,7 +153,7 @@ namespace YouHadOneJob
             {
                 case TileState.Empty:
                     if (OnMoveHead != null)
-                        OnMoveHead (snake.First.Value, newHead.Value, direction);
+                        OnMoveHead (snake.First.Value, newHead.Value, lastDirection);
                     snake.AddFirst (newHead.Value);
                     tiles[newHead.Value] = TileState.Snake;
 

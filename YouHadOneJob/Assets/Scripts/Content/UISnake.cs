@@ -52,9 +52,14 @@ namespace YouHadOneJob
             SetImage (tail, tailSprite, GetDirection (tail, head));
         }
 
-        private void OnMoveHead (Tile prevHead, Tile head, SnakeDirection direction)
+        private void OnMoveHead (Tile prevHead, Tile head, SnakeDirection lastDirection)
         {
-            SetImage (prevHead, bodyLinearSprite, GetDirection (prevHead, head));
+            SnakeDirection direction = GetDirection (prevHead, head);
+            bool hasChangedDirection = lastDirection != direction;
+            if (hasChangedDirection)
+                SetImage (prevHead, bodyCurvedSprite, GetEulerRotationCurved (lastDirection, direction));
+            else
+                SetImage (prevHead, bodyLinearSprite, lastDirection);
             SetImage (head, headSprite, direction);
         }
 
@@ -81,11 +86,16 @@ namespace YouHadOneJob
 
         private void SetImage (Tile tile, Sprite sprite, SnakeDirection rotation)
         {
+            SetImage (tile, sprite, GetEulerRotation (rotation));
+        }
+
+        private void SetImage (Tile tile, Sprite sprite, Vector3 eulerRotation)
+        {
             int index = tile.x + (tile.y * xSize);
             Image image = gridImages[index];
             image.sprite = sprite;
             image.color = sprite ? Color.white : Color.clear;
-            image.rectTransform.localRotation = Quaternion.Euler (GetEulerRotation (rotation));
+            image.rectTransform.localRotation = Quaternion.Euler (eulerRotation);
         }
 
         private Vector3 GetEulerRotation (SnakeDirection rotation)
@@ -93,14 +103,27 @@ namespace YouHadOneJob
             switch (rotation)
             {
                 case SnakeDirection.Right:
-                    return Vector3.right;
+                    return new Vector3 (0, 0, 0);
                 case SnakeDirection.Left:
-                    return Vector3.left;
+                    return new Vector3 (0, 180, 0);
                 case SnakeDirection.Up:
-                    return Vector3.up;
+                    return new Vector3 (0, 0, 90);
                 case SnakeDirection.Down:
-                    return Vector3.down;
+                    return new Vector3 (0, 0, -90);
             }
+            throw new UnityException ();
+        }
+
+        private Vector3 GetEulerRotationCurved (SnakeDirection lastRotation, SnakeDirection rotation)
+        {
+            if (lastRotation == SnakeDirection.Up && rotation == SnakeDirection.Right || lastRotation == SnakeDirection.Left && rotation == SnakeDirection.Down)
+                return new Vector3 (0, 0, -90);
+            if (lastRotation == SnakeDirection.Up && rotation == SnakeDirection.Left || lastRotation == SnakeDirection.Right && rotation == SnakeDirection.Down)
+                return new Vector3 (0, 0, 180);
+            if (lastRotation == SnakeDirection.Down && rotation == SnakeDirection.Right || lastRotation == SnakeDirection.Left && rotation == SnakeDirection.Up)
+                return new Vector3 (0, 0, 0);
+            if (lastRotation == SnakeDirection.Down && rotation == SnakeDirection.Left || lastRotation == SnakeDirection.Right && rotation == SnakeDirection.Up)
+                return new Vector3 (0, 0, 90);
             throw new UnityException ();
         }
 
