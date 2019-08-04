@@ -54,7 +54,7 @@ namespace YouHadOneJob
             switch (state)
             {
                 case PaintingState.Painting:
-                    return "Art (" + conceptStep.GetStep() + "/12)";
+                    return "(" + conceptStep.GetStep() + "/12)";
                 case PaintingState.Completed:
                     return "Complete";
                 case PaintingState.Cancelling:
@@ -94,7 +94,7 @@ namespace YouHadOneJob
 
         private void Paint()
         {
-            if(state == PaintingState.Painting)
+            if (state == PaintingState.Painting)
             {
                 if(timeBetweenStrokes <= 0.0f)
                 {
