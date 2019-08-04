@@ -12,16 +12,6 @@ namespace YouHadOneJob
         [SerializeField]
         private TabsManager tabsManager;
 
-        private const string textFormat = "{0} ({1})";
-
-        private string mainText;
-
-        protected override void Awake ()
-        {
-            base.Awake ();
-            mainText = label.text;
-        }
-
         protected override void HandleClick ()
         {
             tabsManager.FocusTab (tabType);
@@ -30,7 +20,7 @@ namespace YouHadOneJob
         private void Update ()
         {
             tabsManager.Tick (tabType);
-            label.text = string.Format (textFormat, mainText, tabsManager.GetTabText (tabType));
+            label.text = "(" + tabsManager.GetTabText (tabType) + ")";
         }
     }
 }

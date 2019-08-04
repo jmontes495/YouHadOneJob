@@ -6,6 +6,6 @@
         Mailing = 1,
         Coding = 2,
         Arting = 3,
-        Sneaking = 4,
+        Snakeing = 4,
     }
 }
