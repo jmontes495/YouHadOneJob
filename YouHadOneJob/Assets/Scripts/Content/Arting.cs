@@ -54,7 +54,7 @@ namespace YouHadOneJob
             switch (state)
             {
                 case PaintingState.Painting:
-                    return "(" + conceptStep.GetStep() + "/12)";
+                    return conceptStep.GetStep() + "/12";
                 case PaintingState.Completed:
                     return "Complete";
                 case PaintingState.Cancelling:
