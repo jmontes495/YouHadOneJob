@@ -23,17 +23,17 @@ namespace YouHadOneJob
         {
             if (snake != null && snake.State == SnakeState.Lost)
                 return "Press SPACE to restart";
-            return "";
+            return "Move with A, S, D, W";
         }
 
         protected override string GetTabText ()
         {
-            return "WIP";
+            return "Fun!";
         }
 
         protected override void Tick (bool isFocused)
         {
-            if (isFocused)
+            if (isFocused && snake != null)
             {
                 if (snake.State == SnakeState.Playing)
                 {

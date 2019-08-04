@@ -31,19 +31,19 @@ namespace YouHadOneJob
         protected override string GetInstructionsText ()
         {
             if (concept == null)
-                return "Click to arts";
+                return "CLICK to arts";
 
             switch (state)
             {
                 case PaintingState.Painting:
-                    return "Click to arts";
+                    return "CLICK to arts";
                 case PaintingState.Completed:
-                    return "Finished arting. Wait for " + Mathf.CeilToInt(timeToWait) + "s";
+                    return "Finished arting. WAIT " + Mathf.CeilToInt(timeToWait) + "s";
                 case PaintingState.Cancelling:
-                    return "Arted too fast. Wait for " + Mathf.CeilToInt(timeToWait) + "s";
+                    return "Arted too fast. WAIT " + Mathf.CeilToInt(timeToWait) + "s";
             }
 
-            return "Click to arts";
+            return "CLICK to arts";
         }
 
         protected override string GetTabText ()
